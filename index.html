@@ -1,54 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Protection</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
-        }
-        input {
-            padding: 10px;
-            font-size: 16px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .message {
-            color: red;
-            font-size: 14px;
-        }
-    </style>
-</head>
-<body>
-    <h2>Enter Password to Access the Page</h2>
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="checkPassword()">Submit</button>
-    <p class="message" id="errorMessage"></p>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <h2>Welcome to My Password-Protected Page</h2>
+    <form id="loginForm">
+      <input type="password" id="password" name="password" required>
+      <input type="submit" value="Submit">
+    </form>
+    
+    <div id="message"></div>
 
     <script>
-        // Define the correct password
-        const correctPassword = "MakingMusic"; // Change this to your desired password
-        const redirectUrl = "./page1"; // Change this to the page URL you want to redirect to
+      document.getElementById("loginForm").onsubmit = function(event) {
+        event.preventDefault();
+        var password = document.getElementById("password").value;
 
-        function checkPassword() {
-            // Get the password entered by the user
-            const enteredPassword = document.getElementById("password").value;
-
-            // Check if the password is correct
-            if (enteredPassword === correctPassword) {
-                // Redirect to the protected page
-                window.location.href = redirectUrl;
+        google.script.run
+          .withSuccessHandler(function(response) {
+            if (response === "Access granted.") {
+              // Call Apps Script to handle the redirect
+              google.script.run.redirectToPage();
             } else {
-                // Display an error message
-                document.getElementById("errorMessage").textContent = "Incorrect password. Please try again.";
+              document.getElementById("message").innerHTML = response;
             }
-        }
+          })
+          .checkPassword(password);
+      };
     </script>
-</body>
+  </body>
 </html>
